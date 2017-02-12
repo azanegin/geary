@@ -3,58 +3,29 @@
  * This software is licensed under the GNU Lesser General Public License
  * (version 2.1 or later).  See the COPYING file in this distribution.
  */
+using Geary.Config;
 
 public class Geary.AccountInformation : BaseObject {
     public const string PROP_NICKNAME = "nickname"; // Name of nickname property.
-    
-    private const string GROUP = "AccountInformation";
-    private const string REAL_NAME_KEY = "real_name";
-    private const string NICKNAME_KEY = "nickname";
-    private const string PRIMARY_EMAIL_KEY = "primary_email";
-    private const string ALTERNATE_EMAILS_KEY = "alternate_emails";
-    private const string SERVICE_PROVIDER_KEY = "service_provider";
-    private const string ORDINAL_KEY = "ordinal";
-    private const string PREFETCH_PERIOD_DAYS_KEY = "prefetch_period_days";
-    private const string IMAP_USERNAME_KEY = "imap_username";
-    private const string IMAP_REMEMBER_PASSWORD_KEY = "imap_remember_password";
-    private const string SMTP_USERNAME_KEY = "smtp_username";
-    private const string SMTP_REMEMBER_PASSWORD_KEY = "smtp_remember_password";
-    private const string IMAP_HOST = "imap_host";
-    private const string IMAP_PORT = "imap_port";
-    private const string IMAP_SSL = "imap_ssl";
-    private const string IMAP_STARTTLS = "imap_starttls";
-    private const string SMTP_HOST = "smtp_host";
-    private const string SMTP_PORT = "smtp_port";
-    private const string SMTP_SSL = "smtp_ssl";
-    private const string SMTP_STARTTLS = "smtp_starttls";
-    private const string SMTP_USE_IMAP_CREDENTIALS = "smtp_use_imap_credentials";
-    private const string SMTP_NOAUTH = "smtp_noauth";
-    private const string SAVE_SENT_MAIL_KEY = "save_sent_mail";
-    private const string DRAFTS_FOLDER_KEY = "drafts_folder";
-    private const string SENT_MAIL_FOLDER_KEY = "sent_mail_folder";
-    private const string SPAM_FOLDER_KEY = "spam_folder";
-    private const string TRASH_FOLDER_KEY = "trash_folder";
-    private const string ARCHIVE_FOLDER_KEY = "archive_folder";
-    private const string SAVE_DRAFTS_KEY = "save_drafts";
-    private const string USE_EMAIL_SIGNATURE_KEY = "use_email_signature";
-    private const string EMAIL_SIGNATURE_KEY = "email_signature";
-    
+
+
+
     //
     // "Retired" keys
     //
-    
+
     /*
      * key: "imap_pipeline"
      * value: bool
      */
-    
+
     public const string SETTINGS_FILENAME = "geary.ini";
     public const int DEFAULT_PREFETCH_PERIOD_DAYS = 14;
-    
+
     public static int default_ordinal = 0;
-    
+
     private static Gee.HashMap<string, Geary.Endpoint>? known_endpoints = null;
-    
+
     /**
      * Location account information is stored (as well as other data, including database and
      * attachment files.
@@ -320,29 +291,29 @@ public class Geary.AccountInformation : BaseObject {
     ~AccountInformation() {
         if (imap_endpoint != null)
             imap_endpoint.untrusted_host.disconnect(on_imap_untrusted_host);
-        
+
         if (smtp_endpoint != null)
             smtp_endpoint.untrusted_host.disconnect(on_smtp_untrusted_host);
     }
-    
+
     internal static void init() {
         known_endpoints = new Gee.HashMap<string, Geary.Endpoint>();
     }
-    
+
     private static Geary.Endpoint get_shared_endpoint(Service service, Endpoint endpoint) {
         string key = "%s/%s:%u".printf(service.user_label(), endpoint.remote_address.hostname,
             endpoint.remote_address.port);
-        
+
         // if already known, prefer it over this one
         if (known_endpoints.has_key(key))
             return known_endpoints.get(key);
-        
+
         // save for future use and return this one
         known_endpoints.set(key, endpoint);
         
         return endpoint;
     }
-    
+
     // Copies all data from the "from" object into this one.
     public void copy_from(AccountInformation from) {
         this.id = from.id;
@@ -788,62 +759,6 @@ public class Geary.AccountInformation : BaseObject {
             path = path.get_child(parts.get(i));
         return path;
     }
-    
-    private string get_string_value(KeyFile key_file, string group, string key, string def = "") {
-        try {
-            return key_file.get_value(group, key);
-        } catch(KeyFileError err) {
-            // Ignore.
-        }
-        
-        return def;
-    }
-
-    private string get_escaped_string(KeyFile key_file, string group, string key, string def = "") {
-        try {
-            return key_file.get_string(group, key);
-        } catch (KeyFileError err) {
-            // ignore
-        }
-
-        return def;
-    }
-    
-    private Gee.List<string> get_string_list_value(KeyFile key_file, string group, string key) {
-        try {
-            string[] list = key_file.get_string_list(group, key);
-            if (list.length > 0)
-                return Geary.Collection.array_list_wrap<string>(list);
-        } catch(KeyFileError err) {
-            // Ignore.
-        }
-        
-        return new Gee.ArrayList<string>();
-    }
-    
-    private bool get_bool_value(KeyFile key_file, string group, string key, bool def = false) {
-        try {
-            return key_file.get_boolean(group, key);
-        } catch(KeyFileError err) {
-            // Ignore.
-        }
-        
-        return def;
-    }
-    
-    private int get_int_value(KeyFile key_file, string group, string key, int def = 0) {
-        try {
-            return key_file.get_integer(group, key);
-        } catch(KeyFileError err) {
-            // Ignore.
-        }
-        
-        return def;
-    }
-
-    private uint16 get_uint16_value(KeyFile key_file, string group, string key, uint16 def = 0) {
-        return (uint16) get_int_value(key_file, group, key);
-    }
 
     public async void store_async(Cancellable? cancellable = null) {
         if (file == null || config_dir == null) {
@@ -940,12 +855,12 @@ public class Geary.AccountInformation : BaseObject {
             debug("Error writing to account info file: %s", err.message);
         }
     }
-    
+
     public async void clear_stored_passwords_async(ServiceFlag services) throws Error {
         Error? return_error = null;
         check_mediator_instance();
         CredentialsMediator mediator = Geary.Engine.instance.authentication_mediator;
-        
+
         try {
             if (services.has_imap())
                 yield mediator.clear_password_async(Service.IMAP, this);
@@ -963,7 +878,7 @@ public class Geary.AccountInformation : BaseObject {
         if (return_error != null)
             throw return_error;
     }
-    
+
     /**
      * Deletes an account from disk.  This is used by Geary.Engine and should not
      * normally be invoked directly.
