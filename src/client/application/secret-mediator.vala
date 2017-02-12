@@ -26,10 +26,10 @@ public class SecretMediator : Geary.CredentialsMediator, Object {
     private Geary.Credentials get_credentials(Geary.Service service, Geary.AccountInformation account_information) {
         switch (service) {
             case Geary.Service.IMAP:
-                return account_information.imap_credentials;
+                return account_information.imap_information.credentials;
 
             case Geary.Service.SMTP:
-                return account_information.smtp_credentials;
+                return account_information.smtp_information.credentials;
 
             default:
                 assert_not_reached();

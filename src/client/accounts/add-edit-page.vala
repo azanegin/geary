@@ -365,24 +365,24 @@ public class AddEditPage : Gtk.Box {
             info.primary_mailbox.name,
             info.nickname,
             info.primary_mailbox.address,
-            info.imap_credentials.user,
-            info.imap_credentials.pass,
-            info.imap_remember_password && info.smtp_remember_password,
-            info.smtp_credentials != null ? info.smtp_credentials.user : null,
-            info.smtp_credentials != null ? info.smtp_credentials.pass : null,
+            info.imap_information.credentials.user,
+            info.imap_information.credentials.pass,
+            info.imap_information.remember_password && info.smtp_information.remember_password,
+            info.smtp_information.credentials != null ? info.smtp_information.credentials.user : null,
+            info.smtp_information.credentials != null ? info.smtp_information.credentials.pass : null,
             info.service_provider,
             info.save_sent_mail,
             info.allow_save_sent_mail(),
-            info.default_imap_server_host,
-            info.default_imap_server_port,
-            info.default_imap_server_ssl,
-            info.default_imap_server_starttls,
-            info.default_smtp_server_host,
-            info.default_smtp_server_port,
-            info.default_smtp_server_ssl,
-            info.default_smtp_server_starttls,
-            info.default_smtp_use_imap_credentials,
-            info.default_smtp_server_noauth,
+            info.imap_information.host,
+            info.imap_information.port,
+            info.imap_information.use_ssl,
+            info.imap_information.use_starttls,
+            info.smtp_information.host,
+            info.smtp_information.port,
+            info.smtp_information.use_ssl,
+            info.smtp_information.use_starttls,
+            info.smtp_information.smtp_use_imap_credentials,
+            info.smtp_information.smtp_noauth,
             info.prefetch_period_days,
             info.save_drafts,
             info.use_email_signature,
@@ -678,29 +678,29 @@ public class AddEditPage : Gtk.Box {
                 this.real_name.strip(), this.email_address.strip()
             );
             info.nickname = this.nickname.strip();
-            info.imap_credentials = imap_credentials;
-            info.smtp_credentials = smtp_credentials;
-            info.imap_remember_password = this.remember_password;
-            info.smtp_remember_password = this.remember_password;
+            info.imap_information.credentials = imap_credentials;
+            info.smtp_information.credentials = smtp_credentials;
+            info.imap_information.remember_password = this.remember_password;
+            info.smtp_information.remember_password = this.remember_password;
             info.service_provider = this.get_service_provider();
             info.save_sent_mail = this.save_sent_mail;
-            info.default_imap_server_host = this.imap_host;
-            info.default_imap_server_port = this.imap_port;
-            info.default_imap_server_ssl = this.imap_ssl;
-            info.default_imap_server_starttls = this.imap_starttls;
-            info.default_smtp_server_host = this.smtp_host.strip();
-            info.default_smtp_server_port = this.smtp_port;
-            info.default_smtp_server_ssl = this.smtp_ssl;
-            info.default_smtp_server_starttls = this.smtp_starttls;
-            info.default_smtp_use_imap_credentials = this.smtp_use_imap_credentials;
-            info.default_smtp_server_noauth = this.smtp_noauth;
+            info.imap_information.host = this.imap_host;
+            info.imap_information.port = this.imap_port;
+            info.imap_information.use_ssl = this.imap_ssl;
+            info.imap_information.use_starttls = this.imap_starttls;
+            info.smtp_information.host = this.smtp_host.strip();
+            info.smtp_information.port = this.smtp_port;
+            info.smtp_information.use_ssl = this.smtp_ssl;
+            info.smtp_information.use_starttls = this.smtp_starttls;
+            info.smtp_information.smtp_use_imap_credentials = this.smtp_use_imap_credentials;
+            info.smtp_information.smtp_noauth = this.smtp_noauth;
             info.prefetch_period_days = get_storage_length();
             info.save_drafts = this.save_drafts;
             info.use_email_signature = this.use_email_signature;
             info.email_signature = this.email_signature;
 
             if (smtp_noauth)
-                info.smtp_credentials = null;
+                info.smtp_information.credentials = null;
 
             on_changed();
         }

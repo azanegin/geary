@@ -43,14 +43,14 @@ public class PasswordDialog {
         primary_text_label.set_markup(PRIMARY_TEXT_MARKUP.printf(PRIMARY_TEXT_FIRST_TRY));
 
         if (smtp) {
-            label_username.set_text(account_information.smtp_credentials.user ?? "");
-            entry_password.set_text(account_information.smtp_credentials.pass ?? "");
+            label_username.set_text(account_information.smtp_information.credentials.user ?? "");
+            entry_password.set_text(account_information.smtp_information.credentials.pass ?? "");
         } else {
-            label_username.set_text(account_information.imap_credentials.user ?? "");
-            entry_password.set_text(account_information.imap_credentials.pass ?? "");
+            label_username.set_text(account_information.imap_information.credentials.user ?? "");
+            entry_password.set_text(account_information.imap_information.credentials.pass ?? "");
         }
-        check_remember_password.active = (smtp ? account_information.smtp_remember_password
-            : account_information.imap_remember_password);
+        check_remember_password.active = (smtp ? account_information.smtp_information.remember_password
+            : account_information.imap_information.remember_password);
         if (smtp)
             label_smtp.show();
         

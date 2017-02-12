@@ -337,7 +337,7 @@ public class Geary.Engine : BaseObject {
         
         if (!error_code.is_all_set(ValidationResult.IMAP_CONNECTION_FAILED)) {
             try {
-                yield imap_session.initiate_session_async(account.imap_credentials, cancellable);
+                yield imap_session.initiate_session_async(account.imap_information.credentials, cancellable);
                 
                 // Connected and initiated, still need to be sure connection authorized
                 Imap.MailboxSpecifier current_mailbox;
@@ -363,7 +363,7 @@ public class Geary.Engine : BaseObject {
         // SMTP is simpler, merely see if login works and done (throws an SmtpError if not)
         Geary.Smtp.ClientSession? smtp_session = new Geary.Smtp.ClientSession(account.get_smtp_endpoint());
         try {
-            yield smtp_session.login_async(account.smtp_credentials, cancellable);
+            yield smtp_session.login_async(account.smtp_information.credentials, cancellable);
         } catch (Error err) {
             debug("Error validating SMTP account info: %s", err.message);
             if (err is SmtpError.AUTHENTICATION_FAILED)
